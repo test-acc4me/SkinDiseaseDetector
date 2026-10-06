@@ -1,8 +1,12 @@
 # 🩺 Skin Disease Detector — AI-Powered Skin Analysis
 
-An AI web application that analyzes an uploaded skin image and predicts one of six supported conditions using a fine-tuned **EfficientNet-B0** model (PyTorch). Built as a university final-year project — simple, clean, and presentation-ready.
+An AI-powered web application that analyzes an uploaded skin image and predicts one of six supported classes using a fine-tuned **EfficientNet-B0** model built with **PyTorch**.
 
-> ⚠️ **Disclaimer:** This is an AI-based research/educational tool and does **not** provide a medical diagnosis. Results may be inaccurate. Always consult a qualified healthcare professional.
+This project was developed as a university final-year project with a focus on image classification, practical deployment, and responsible AI presentation.
+
+> ⚠️ **Medical Disclaimer**
+>
+> This application is an AI-based research and educational tool. It does **not** provide a medical diagnosis. Predictions may be incorrect and should not be used as a substitute for professional medical advice. Always consult a qualified healthcare professional.
 
 ---
 
@@ -10,169 +14,272 @@ An AI web application that analyzes an uploaded skin image and predicts one of s
 
 1. [Features](#-features)
 2. [Supported Conditions](#-supported-conditions)
-3. [Tech Stack](#-tech-stack)
+3. [Technology Stack](#-technology-stack)
 4. [Project Structure](#-project-structure)
 5. [How It Works](#-how-it-works)
 6. [Model Details](#-model-details)
-7. [Installation & Running](#-installation--running)
-8. [API Endpoints](#-api-endpoints)
-9. [Usage Guide](#-usage-guide)
-10. [Image Validation Rules](#-image-validation-rules)
-11. [Confidence Levels](#-confidence-levels)
-12. [Privacy](#-privacy)
-13. [Troubleshooting](#-troubleshooting)
+7. [Model Performance](#-model-performance)
+8. [Installation](#-installation)
+9. [Running the Application](#-running-the-application)
+10. [API Endpoints](#-api-endpoints)
+11. [Usage Guide](#-usage-guide)
+12. [Image Validation](#-image-validation)
+13. [Confidence Levels](#-confidence-levels)
+14. [Privacy](#-privacy)
+15. [Troubleshooting](#-troubleshooting)
+16. [Deployment](#-deployment)
+17. [Academic Notes](#-academic-notes)
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-- 📤 **Image Upload** — drag & drop or browse (JPG / JPEG / PNG, max 10 MB)
-- 📷 **Camera Upload** — on mobile, take a photo directly or pick from the gallery
-- 🚫 **Invalid Image Rejection** — non-skin images are refused with a clear message
+- 📤 **Image Upload** — JPG, JPEG, or PNG; maximum 10 MB
 - 🖼️ **Image Preview** — filename and dimensions shown before analysis
-- 🔬 **AI Analysis Animation** — step-by-step "Analyzing image..." progress
-- 🎯 **Prediction Result** — predicted condition, confidence %, and HIGH/MODERATE/LOW badge
-- 📊 **Probability Breakdown** — animated bars for all six classes
-- 📚 **Disease Information** — short, concise educational card per predicted class
-- 🧪 **Supported Conditions Section** — clickable cards for all six classes
-- 📊 **Model Information** — architecture, framework, dataset sizes, accuracy/F1 stats
-- 🌙 **Dark / Light Mode** — toggle in the top-right, saved in the browser
-- 📱 **Responsive** — works on desktop, laptop, tablet, and phone
-- 🔒 **Privacy Handling** — images are processed in memory and never permanently stored
-- 🔄 **Analyze Another Image** — one-click reset
+- 🔬 **AI Analysis** — EfficientNet-B0 V2 through a FastAPI backend
+- 🎯 **Prediction Result** — predicted condition and confidence percentage
+- 📊 **Probability Breakdown** — probabilities for all six supported classes
+- 📚 **Disease Information** — concise educational information for the predicted class
+- 🧪 **Supported Conditions** — all six model classes shown in the interface
+- 📈 **Model Information** — architecture, dataset size, and evaluation metrics
+- 🌙 **Dark / Light Mode**
+- 📱 **Responsive Design** — desktop, laptop, tablet, and mobile
+- 🔄 **Analyze Another Image**
+- 🔒 **Privacy-Oriented Processing** — no accounts, patient profiles, or prediction history
 
 ---
 
-## 🦠 Supported Conditions
+# 🦠 Supported Conditions
 
-| # | Condition  |
-|---|------------|
+| # | Condition |
+|---|---|
 | 1 | Chickenpox |
-| 2 | Cowpox     |
+| 2 | Cowpox |
 | 3 | HFMD (Hand, Foot and Mouth Disease) |
-| 4 | Healthy    |
-| 5 | Measles    |
-| 6 | Mpox       |
+| 4 | Healthy |
+| 5 | Measles |
+| 6 | Mpox |
+
+> **Important:** The model is only trained to classify these six classes. It should not be assumed to detect other skin diseases.
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠️ Technology Stack
 
-| Layer    | Technology |
-|----------|------------|
-| AI Model | EfficientNet-B0, PyTorch, Torchvision |
-| Backend  | FastAPI, Uvicorn, Pillow, python-multipart |
-| Frontend | HTML5, CSS3, Vanilla JavaScript (no frameworks) |
+| Layer | Technology |
+|---|---|
+| AI Model | EfficientNet-B0 |
+| Deep Learning | PyTorch |
+| Computer Vision | Torchvision |
+| Backend | FastAPI |
+| ASGI Server | Uvicorn |
+| Image Processing | Pillow |
+| Frontend | HTML5, CSS3, Vanilla JavaScript |
+| API | REST / JSON |
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
-```
+```text
 SkinDiseaseDetector/
 │
 ├── backend/
-│   ├── main.py              # FastAPI app: routes, validation, serving frontend
-│   ├── model.py             # EfficientNet-B0 loader (V2 checkpoint)
-│   ├── preprocessing.py     # Image transforms (same as V2 evaluation)
-│   └── requirements.txt     # Python dependencies
+│   ├── main.py
+│   ├── model.py
+│   ├── preprocessing.py
+│   └── requirements.txt
 │
 ├── frontend/
-│   ├── index.html           # Page structure (hero, result, sections, footer)
-│   ├── style.css            # Light/dark themes, responsive layout
-│   └── script.js            # Upload, API calls, results, bars, theme toggle
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   └── assets/
 │
 ├── model/
-│   └── best_skin_disease_model_V2.pth   # Trained V2 model weights
+│   └── best_skin_disease_model_V2.pth
 │
 ├── README.md
-├── Dockerfile           # One-command container build (Render / HF Spaces)
-├── .python-version      # Pins Python 3.11 for deployment
+├── Dockerfile
+├── .python-version
 └── .gitignore
 ```
 
 ---
 
-## 🔄 How It Works
+# 🔄 How It Works
 
-```
-Upload Image
-    ↓
-Validation (type / size / format)
-    ↓
-Preview shown to user
-    ↓
-Analyze button clicked
-    ↓
-POST /predict → FastAPI
-    ↓
-Preprocess: Resize 224×224 → ToTensor → ImageNet Normalize
-    ↓
-EfficientNet-B0 (V2) inference
-    ↓
-Softmax → class probabilities
-    ↓
-JSON response → Result screen (prediction, confidence, breakdown, info)
+```text
+User uploads image
+        ↓
+File validation
+        ↓
+Image preview
+        ↓
+User clicks "Analyze Image"
+        ↓
+POST /predict
+        ↓
+FastAPI receives image
+        ↓
+Resize to 224 × 224
+        ↓
+ToTensor
+        ↓
+ImageNet normalization
+        ↓
+EfficientNet-B0 V2
+        ↓
+Softmax probabilities
+        ↓
+Prediction + confidence
+        ↓
+JSON response
+        ↓
+Frontend displays results
 ```
 
 ---
 
-## 🤖 Model Details
+# 🤖 Model Details
 
 | Property | Value |
 |---|---|
 | Architecture | EfficientNet-B0 |
-| Classifier head | Dropout(0.35) → Linear(1280 → 6) |
+| Classifier | Dropout(0.35) → Linear(1280 → 6) |
 | Framework | PyTorch |
-| Input size | 224 × 224 px |
-| Classes | 6 |
-| Training images | 7,184 |
-| Validation images | 896 |
-| Internal test images | 903 |
-| **Internal test accuracy** | **98.78%** |
-| **Internal test macro F1** | **99.06%** |
-| External benchmark accuracy | 80.00% (60 images) |
+| Input Size | 224 × 224 pixels |
+| Number of Classes | 6 |
+| Training Images | 7,184 |
+| Validation Images | 896 |
+| Internal Test Images | 903 |
+| Model Version | V2 |
 
-The external benchmark result is intentionally shown for academic transparency.
+### Inference preprocessing
 
-> **Important:** Website predictions use the **same preprocessing as V2 evaluation** — no training augmentation (no random flips/rotations) is applied.
+The web application uses the same preprocessing used during V2 evaluation:
+
+```text
+Resize → 224 × 224
+        ↓
+ToTensor
+        ↓
+ImageNet Normalization
+        ↓
+EfficientNet-B0
+        ↓
+Softmax
+```
+
+No random training augmentation is used during prediction.
 
 ---
 
-## 🚀 Installation & Running
+# 📊 Model Performance
 
-### 1. Install dependencies
-```bash
-cd SkinDiseaseDetector\backend
-pip install -r requirements.txt
-```
+## Internal Test Set
 
-### 2. Start the server
-```bash
-python -m uvicorn main:app
-```
+| Metric | V2 |
+|---|---:|
+| Accuracy | **98.78%** |
+| Macro F1 | **99.06%** |
+| Incorrect Predictions | **11 / 903** |
 
-### 3. Open the app
-Visit: **http://127.0.0.1:8000**
+These results are from the held-out V2 internal test dataset.
 
-Interactive API docs (for the demo): **http://127.0.0.1:8000/docs**
+## External Benchmark
+
+An additional external benchmark containing **60 images** was used to evaluate practical generalization.
+
+| Metric | V2 |
+|---|---:|
+| Accuracy | **80.00%** |
+| Macro F1 | **79.01%** |
+| Incorrect Predictions | **12 / 60** |
+
+The external benchmark is a small evaluation set and should **not** be interpreted as clinical validation.
+
+The difference between internal and external performance demonstrates the effect of dataset/domain differences on image classification models.
 
 ---
 
-## 🔌 API Endpoints
+# 🚀 Installation
 
-### `GET /`
-Serves the frontend application.
+## 1. Clone or download
 
-### `GET /health`
+```bash
+git clone https://github.com/YOUR_USERNAME/SkinDiseaseDetector.git
+cd SkinDiseaseDetector
+```
+
+Or download the project ZIP and extract it.
+
+## 2. Create a virtual environment
+
+### Windows
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+## 3. Install dependencies
+
+From the project root:
+
+```powershell
+pip install -r backend\requirements.txt
+```
+
+---
+
+# ▶️ Running the Application
+
+From the project root:
+
+```powershell
+python -m uvicorn backend.main:app --reload
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+> If `main.py` is configured to serve the frontend, opening the root URL will display the web application.
+
+---
+
+# 🔌 API Endpoints
+
+## `GET /`
+
+Serves the web application.
+
+## `GET /health`
+
+Example:
+
 ```json
-{ "status": "ok", "model": "V2" }
+{
+  "status": "ok",
+  "model": "V2"
+}
 ```
 
-### `POST /predict`
-Send a multipart form-data request with field `file` (the image).
+## `POST /predict`
 
-**Success response (200):**
+Accepts an image using multipart form data with the field `file`.
+
+Example response:
+
 ```json
 {
   "prediction": "Mpox",
@@ -188,138 +295,148 @@ Send a multipart form-data request with field `file` (the image).
 }
 ```
 
-**Error response (400):**
-```json
-{ "detail": "Please upload a JPG, JPEG, or PNG image." }
-```
+---
+
+# 📖 Usage Guide
+
+1. Open `http://127.0.0.1:8000/`.
+2. Upload a skin image.
+3. Check the image preview.
+4. Click **🔬 Analyze Image**.
+5. Wait for the AI model to process the image.
+6. Review the prediction, confidence, probability breakdown, and educational information.
+7. Click **🔄 Analyze Another Image** to perform another prediction.
 
 ---
 
-## 📖 Usage Guide
-
-1. Open http://127.0.0.1:8000
-2. Drag a skin image into the upload box (or click to browse)
-3. Check the preview (filename + dimensions)
-4. Click **🔬 Analyze Image**
-5. View the prediction, confidence, probability breakdown, and disease info
-6. Click **🔄 Analyze Another Image** to test again
-7. Use ☀️/🌙 to switch theme, and click any condition card to read about it
-
----
-
-## ✅ Image Validation Rules
+# ✅ Image Validation
 
 | Rule | Accepted | Rejected |
 |---|---|---|
-| Format | .jpg, .jpeg, .png | PDF, video, text, other formats |
+| Format | JPG, JPEG, PNG | PDF, video, text, other formats |
 | Size | ≤ 10 MB | > 10 MB |
-| Type | Valid image file | Corrupted or non-image data |
+| File | Valid image | Corrupted/invalid image |
+
+> File validation confirms that the uploaded file is a valid image. It does **not** guarantee that the image contains a skin lesion or belongs to one of the supported disease classes.
 
 ---
 
-## 🎯 Confidence Levels
+# 🎯 Confidence Levels
 
-| Confidence | Label | UI message |
-|---|---|---|
-| ≥ 80% | HIGH | Model confidence is high. Still not a medical diagnosis. |
-| 50–79% | MODERATE | Moderately confident. Consider professional evaluation. |
-| < 50% | LOW | Low confidence. Do not rely on this result. |
-
-These are UI labels, not medically validated thresholds.
-
----
-
-## 🔒 Privacy
-
-- Uploaded images are read into memory, passed through the model, and **never written to disk**.
-- No database, no user accounts, no history, no image logging.
-
----
-
-## 🛠️ Troubleshooting
-
-| Problem | Fix |
+| Confidence | Label |
 |---|---|
-| `ModuleNotFoundError` | Run `pip install -r requirements.txt` in `backend/` |
-| Port 8000 in use | `python -m uvicorn main:app --port 8001` |
-| Model fails to load | Check `model/best_skin_disease_model_V2.pth` exists |
-| "Could not reach the server" in the UI | Backend isn't running — start uvicorn first |
-| Prediction fails on valid image | Ensure the file is a real JPG/PNG and under 10 MB |
+| ≥ 80% | HIGH |
+| 50–79% | MODERATE |
+| < 50% | LOW |
+
+These are **UI indicators only** and are not medically validated confidence thresholds.
+
+Even a high-confidence prediction should not be interpreted as a medical diagnosis.
 
 ---
 
-## 🌍 Deployment — Go Live for Free
+# 🔒 Privacy
 
-This project is ready to deploy. You need a free account on GitHub and on one hosting platform.
+The application is designed without:
 
-### Step 1 — Push the code to GitHub
+- User accounts
+- Patient profiles
+- Database storage
+- Prediction history
+- Image history
 
-```bash
-cd SkinDiseaseDetector
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/SkinDiseaseDetector.git
-git push -u origin main
+Uploaded images are processed for inference and are not intended to be permanently stored by the application.
+
+> The exact privacy behavior depends on the deployed backend and hosting configuration.
+
+---
+
+# 🛠️ Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| `ModuleNotFoundError` | Run `pip install -r backend\requirements.txt` |
+| Port 8000 is in use | Run `python -m uvicorn backend.main:app --port 8001` |
+| Model fails to load | Check `model/best_skin_disease_model_V2.pth` exists |
+| Frontend cannot reach backend | Make sure Uvicorn is running |
+| Prediction fails | Check that the image is a valid JPG, JPEG, or PNG |
+| File too large | Upload an image smaller than 10 MB |
+
+---
+
+# 🌍 Deployment
+
+The application can be deployed to a cloud platform that supports Python/FastAPI applications.
+
+Required runtime:
+
+```text
+Python 3.11
+FastAPI
+Uvicorn
+PyTorch
+Torchvision
+Pillow
 ```
 
-> The model file `best_skin_disease_model_V2.pth` (~48 MB) is under GitHub's 100 MB limit, so it can be committed directly. Do not exceed 100 MB per file.
+The trained model must be available at:
+
+```text
+model/best_skin_disease_model_V2.pth
+```
+
+For production deployment:
+
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+```
+
+> Free hosting plans, resource limits, and deployment requirements can change. Check the hosting provider's current documentation before deployment.
 
 ---
 
-### Option A — Render (recommended, simplest)
+# 🎓 Academic Notes
 
-[render.com](https://render.com) gives free web services (sleeps after ~15 min idle, wakes on visit).
+This project demonstrates:
 
-1. Sign up with your GitHub account.
-2. **New → Web Service** → select your `SkinDiseaseDetector` repo.
-3. Fill in:
-   - **Root Directory:** `backend`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-4. Click **Deploy**. After a few minutes you get a URL like `https://skindiseasedetector.onrender.com`.
+- Image classification
+- Transfer learning
+- Deep learning with PyTorch
+- EfficientNet-B0
+- Dataset preparation
+- Class balancing
+- Model evaluation
+- REST API development
+- FastAPI backend development
+- Frontend integration
+- Responsive web design
+- Practical model deployment
 
-That URL works on any phone/laptop anywhere, and the camera feature works because Render serves HTTPS automatically.
+The V2 model achieved **98.78% accuracy and 99.06% Macro F1 on the internal held-out test set**.
 
----
+However, the separate 60-image external benchmark produced **80.00% accuracy**, demonstrating that strong internal test performance does not necessarily translate directly to external real-world images.
 
-### Option B — Hugging Face Spaces (free, no credit card, stays awake longer)
-
-1. Sign up at [huggingface.co](https://huggingface.co).
-2. **New → Space** → name it, choose **Docker** as the SDK → Create.
-3. Upload all project files (including the `Dockerfile` at the repo root).
-4. The Space builds automatically and gives you a public URL like `https://huggingface.co/spaces/YOUR_USERNAME/SkinDiseaseDetector`.
-
-The `Dockerfile` in this repo installs CPU-only PyTorch, so the free tier works.
+This limitation is explicitly acknowledged as part of the project evaluation.
 
 ---
 
-### Option C — PythonAnywhere (free, always-on)
+# ⚠️ Final Disclaimer
 
-1. Sign up at [pythonanywhere.com](https://www.pythonanywhere.com).
-2. Open a **Bash console** and clone your repo.
-3. Create a virtualenv, `pip install -r backend/requirements.txt`.
-4. In the **Web** tab, add a new web app (manual config, Python 3.11), set the working directory to `backend`, and point the WSGI/ASGI config to run uvicorn — or simpler, use a "always-on" **scheduled task / console** running:
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000
-   ```
-   (On the free tier, web apps use HTTPS on a `yourname.pythonanywhere.com` domain.)
+This project is intended for **educational, research, and demonstration purposes only**.
 
----
+The Skin Disease Detector is not a medical diagnostic system.
 
-### Deployment notes
+Do not use its predictions to:
 
-- **HTTPS:** All these platforms serve HTTPS, which the phone camera feature requires.
-- **CPU-only PyTorch:** `backend/requirements.txt` pulls CPU wheels — much smaller and faster to install than the CUDA version.
-- **Cold starts:** Render/Spaces may take 20–60 seconds to wake up; that's normal for free tiers.
-- **Privacy:** Images are still processed in memory and never stored — true for any deployment of this app.
-- **Custom domain (optional):** Render and HF Spaces both allow connecting your own domain for free.
+- Diagnose a medical condition
+- Start or stop medication
+- Replace professional medical consultation
+- Make emergency medical decisions
+
+For medical concerns, consult a qualified healthcare professional.
 
 ---
 
-## 🎓 Academic Note
+# SkinDiseaseDetector
 
-This project is intended for educational demonstration. Model performance on real-world, external data (80.00% on 60 benchmark images) shows the gap between internal test metrics and practical deployment — an important discussion point for the presentation.
-#   S k i n D i s e a s e D e t e c t o r  
- 
+**AI-powered skin image classification using EfficientNet-B0 and PyTorch.**
