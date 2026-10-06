@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skin Disease Detector — AI Analysis</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>SkinDiseaseDetector</span></div>
+  <button id="themeToggle" class="theme-btn" title="Toggle theme"></button>
+</header>
+
+<main>
+  <!-- HERO / UPLOAD -->
+  <section id="home" class="hero">
+    <h1>AI Skin Disease Detector</h1>
+    <p class="subtitle">Upload a skin image and let our AI model analyze it.</p>
+
+    <div id="uploadBox" class="upload-box">
+      <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
+      <h3>Upload Skin Image</h3>
+      <p>Drag &amp; drop or <span class="browse">Browse</span></p>
+      <small>JPG • JPEG • PNG • Max 10 MB</small>
+      <input type="file" id="fileInput" accept=".jpg,.jpeg,.png" hidden>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+      <div id="uploadChoice" class="upload-choice" hidden>
+        <button id="cameraBtn" class="btn primary" type="button">📷 Take Photo</button>
+        <button id="galleryBtn" class="btn ghost" type="button">🖼️ Choose from Gallery</button>
+      </div>
+    </div>
+    <p id="uploadError" class="error-msg" hidden></p>
+
+    <div id="previewArea" class="preview-area" hidden>
+      <img id="previewImg" alt="Preview">
+      <div class="preview-meta">
+        <p><strong>File:</strong> <span id="fileName"></span></p>
+        <p><strong>Dimensions:</strong> <span id="fileDims"></span></p>
+        <div class="btn-row">
+          <button id="analyzeBtn" class="btn primary"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyze Image</button>
+          <button id="removeBtn" class="btn ghost">✕ Remove</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYZING -->
+  <section id="analyzing" class="card" hidden>
+    <h2><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyzing image...</h2>
+    <div class="spinner"></div>
+    <ul id="analyzeSteps" class="steps">
+      <li>Preparing image...</li>
+      <li>Running AI model...</li>
+      <li>Generating prediction...</li>
+    </ul>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" hidden>
+    <div class="card result-card">
+      <h2>ANALYSIS RESULT</h2>
+      <img id="resultImg" class="result-img" alt="Analyzed">
+      <p class="label">Predicted Condition</p>
+      <h1 id="predName" class="pred-name"></h1>
+      <p id="predConf" class="pred-conf"></p>
+      <span id="confBadge" class="badge"></span>
+      <p id="confWarning" class="warn-text"></p>
+    </div>
+
+    <div class="card">
+      <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Probability Breakdown</h3>
+      <div id="probBars"></div>
+    </div>
+
+    <button id="againBtn" class="btn primary wide"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Analyze Another Image</button>
+  </section>
+
+  <div class="card" id="diseaseInfoCard" hidden>
+    <h3 id="diTitle"></h3>
+    <p id="diDesc"></p>
+    <h4>Common Symptoms</h4>
+    <ul id="diSymptoms"></ul>
+    <h4>When to Seek Medical Attention</h4>
+    <p id="diSeek"></p>
+    <p class="disclaimer-inline">Note: This information is general educational information and is not a diagnosis.</p>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <section class="card disclaimer">
+    <strong>Important:</strong> This application is an AI-based research/educational tool and does not provide a medical diagnosis. Results may be inaccurate. Consult a qualified healthcare professional for medical advice or diagnosis.
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <h2>How It Works</h2>
+    <div class="steps-grid">
+      <div class="step-card"><span class="num">1</span><h4>Upload</h4><p>Select or drag a skin image.</p></div>
+      <div class="step-card"><span class="num">2</span><h4>Preprocess</h4><p>Image resized to 224×224 &amp; normalized.</p></div>
+      <div class="step-card"><span class="num">3</span><h4>AI Analysis</h4><p>EfficientNet-B0 predicts the condition.</p></div>
+      <div class="step-card"><span class="num">4</span><h4>Results</h4><p>View prediction, confidence &amp; info.</p></div>
+    </div>
+  </section>
+
+  <!-- CONDITIONS -->
+  <section class="section">
+    <h2>Supported Conditions</h2>
+    <div id="conditionCards" class="grid six"></div>
+    <div id="conditionInfo" class="card" hidden style="margin-top:16px"></div>
+  </section>
+
+  <!-- MODEL INFO -->
+  <section class="section">
+    <h2>About the AI Model</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Architecture</h3>
+        <table class="info-table">
+          <tr><td>Model Architecture</td><td>EfficientNet-B0</td></tr>
+          <tr><td>Framework</td><td>PyTorch</td></tr>
+          <tr><td>Input Size</td><td>224 × 224 px</td></tr>
+          <tr><td>Classes</td><td>6</td></tr>
+          <tr><td>Training Images</td><td>7,184</td></tr>
+          <tr><td>Validation Images</td><td>896</td></tr>
+          <tr><td>Internal Test Images</td><td>903</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Evaluation</h3>
+        <table class="info-table">
+          <tr><td>Internal Test Accuracy</td><td>98.78%</td></tr>
+          <tr><td>Internal Test Macro F1</td><td>99.06%</td></tr>
+          <tr><td>External Benchmark</td><td>80.00%</td></tr>
+          <tr><td>External Benchmark Images</td><td>60</td></tr>
+        </table>
+        <p class="disclaimer-inline">Privacy: Uploaded images are processed for prediction and are not permanently stored.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>SkinDiseaseDetector — AI-based research/educational tool. Not for medical diagnosis.</p>
+</footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
